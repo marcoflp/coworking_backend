@@ -13,8 +13,8 @@ class Reserva extends Model {
         id: { type: 'integer' },
         usuario_id: { type: 'integer' },
         sala_id: { type: 'integer' },
-        horario_inicio: { type: 'string', format: 'date-time' },
-        horario_fim: { type: 'string', format: 'date-time' },
+        horario_inicio: { type: 'string' },
+        horario_fim: { type: 'string' },
         proposito: { type: ['string','null'] }
       }
     };
