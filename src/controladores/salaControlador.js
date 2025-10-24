@@ -2,9 +2,12 @@ const Sala = require('../modelos/Sala');
 
 exports.criar = async (req, res) => {
   try {
+    console.log('Criando sala:', req.body);
     const sala = await Sala.query().insert(req.body);
+    console.log('Sala criada:', sala);
     res.status(201).json(sala);
   } catch (err) {
+    console.error('Erro ao criar sala:', err);
     res.status(400).json({ erro: err.message });
   }
 };
