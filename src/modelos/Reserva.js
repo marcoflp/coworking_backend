@@ -20,6 +20,17 @@ class Reserva extends Model {
     };
   }
 
+  $parseDatabaseJson(json) {
+    json = super.$parseDatabaseJson(json);
+    if (json.horario_inicio) {
+      json.horario_inicio = new Date(json.horario_inicio).toISOString();
+    }
+    if (json.horario_fim) {
+      json.horario_fim = new Date(json.horario_fim).toISOString();
+    }
+    return json;
+  }
+
   static get relationMappings() {
     const Usuario = require('./Usuario');
     const Sala = require('./Sala');
