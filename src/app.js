@@ -25,6 +25,18 @@ app.use((req, res, next) => {
   next();
 });
 
+// Middleware para garantir JSON válido
+app.use((req, res, next) => {
+  const originalSend = res.send;
+  res.send = function(data) {
+    if (typeof data === 'object') {
+      return originalSend.call(this, JSON.stringify(data));
+    }
+    return originalSend.call(this, data);
+  };
+  next();
+});
+
 app.get('/', (req, res) => res.send({ ok: true, versao: 'coworking-api-1.0' }));
 
 app.use('/usuarios', usuarioRotas);

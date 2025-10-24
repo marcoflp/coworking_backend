@@ -2,6 +2,7 @@ const Reserva = require('../modelos/Reserva');
 
 exports.criar = async (req, res) => {
   try {
+    console.log('Criando reserva:', req.body);
     const { sala_id, horario_inicio, horario_fim } = req.body;
     
     // Validar se as datas são válidas
@@ -32,16 +33,26 @@ exports.criar = async (req, res) => {
     }
     
     const reserva = await Reserva.query().insert(req.body);
+    console.log('Reserva criada:', reserva);
     const completa = await Reserva.query().findById(reserva.id).withGraphFetched('[usuario,sala]');
+    console.log('Reserva completa:', completa);
     res.status(201).json(completa);
   } catch (err) {
+    console.error('Erro ao criar reserva:', err);
     res.status(400).json({ erro: err.message });
   }
 };
 
 exports.listar = async (req, res) => {
-  const reservas = await Reserva.query().withGraphFetched('[usuario,sala]');
-  res.json(reservas);
+  try {
+    console.log('Listando reservas...');
+    const reservas = await Reserva.query().withGraphFetched('[usuario,sala]');
+    console.log('Reservas encontradas:', reservas.length);
+    res.json(reservas);
+  } catch (err) {
+    console.error('Erro ao listar reservas:', err);
+    res.status(500).json({ erro: err.message });
+  }
 };
 
 exports.buscarPorId = async (req, res) => {
