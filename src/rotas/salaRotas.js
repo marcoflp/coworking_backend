@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const salaControlador = require('../controladores/salaControlador');
+const auth = require('../middleware/auth');
+const admin = require('../middleware/admin');
 
-router.post('/', salaControlador.criar);
-router.get('/', salaControlador.listar);
-router.get('/:id', salaControlador.buscarPorId);
-router.patch('/:id', salaControlador.atualizar);
-router.delete('/:id', salaControlador.deletar);
+router.get('/', auth, salaControlador.listar);
+router.get('/:id', auth, salaControlador.buscarPorId);
+router.post('/', auth, salaControlador.criar);
+router.patch('/:id', auth, salaControlador.atualizar);
+router.delete('/:id', auth, admin, salaControlador.deletar);
 
 module.exports = router;
