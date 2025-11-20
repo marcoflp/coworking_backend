@@ -8,12 +8,14 @@ class Usuario extends Model {
   static get jsonSchema() {
     return {
       type: 'object',
-      required: ['nome','email'],
+      required: ['nome','email','senha'],
       properties: {
         id: { type: 'integer' },
         nome: { type: 'string', minLength: 1, maxLength: 255 },
         email: { type: 'string', format: 'email' },
-        telefone: { type: ['string','null'] }
+        telefone: { type: ['string','null'] },
+        senha: { type: 'string', minLength: 6 },
+        tipo: { type: 'string', enum: ['admin', 'usuario'], default: 'usuario' }
       }
     };
   }
