@@ -2,8 +2,18 @@ const Reserva = require('../modelos/Reserva');
 
 exports.criar = async (req, res) => {
   try {
-    console.log('Criando reserva:', req.body);
-    const { sala_id, horario_inicio, horario_fim } = req.body;
+    console.log('📥 Body recebido:', req.body);
+    let { usuario_id, sala_id, horario_inicio, horario_fim, proposito } = req.body;
+    
+    console.log('🔢 Antes conversão - usuario_id:', usuario_id, 'tipo:', typeof usuario_id);
+    console.log('🔢 Antes conversão - sala_id:', sala_id, 'tipo:', typeof sala_id);
+    
+    // Converter para número
+    usuario_id = parseInt(usuario_id);
+    sala_id = parseInt(sala_id);
+    
+    console.log('✅ Após conversão - usuario_id:', usuario_id, 'tipo:', typeof usuario_id);
+    console.log('✅ Após conversão - sala_id:', sala_id, 'tipo:', typeof sala_id);
     
     // Validar se as datas são válidas
     if (horario_inicio && !Date.parse(horario_inicio)) {
@@ -32,7 +42,13 @@ exports.criar = async (req, res) => {
       return res.status(400).json({ erro: 'Horário já reservado para esta sala' });
     }
     
-    const reserva = await Reserva.query().insert(req.body);
+    const reserva = await Reserva.query().insert({
+      usuario_id,
+      sala_id,
+      horario_inicio,
+      horario_fim,
+      proposito
+    });
     console.log('Reserva criada:', reserva);
     const completa = await Reserva.query().findById(reserva.id).withGraphFetched('[usuario,sala]');
     console.log('Reserva completa:', completa);

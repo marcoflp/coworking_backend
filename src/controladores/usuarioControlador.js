@@ -47,8 +47,9 @@ exports.buscarPorId = async (req, res) => {
 
 exports.atualizar = async (req, res) => {
   try {
+    await Usuario.query().patchAndFetchById(req.params.id, req.body);
     const usuario = await Usuario.query()
-      .patchAndFetchById(req.params.id, req.body)
+      .findById(req.params.id)
       .select('id', 'nome', 'email', 'telefone');
     res.json(usuario);
   } catch (err) {
