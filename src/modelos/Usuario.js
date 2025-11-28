@@ -8,7 +8,7 @@ class Usuario extends Model {
   static get jsonSchema() {
     return {
       type: 'object',
-      required: ['nome','email','senha'],
+      required: ['nome','email'],
       properties: {
         id: { type: 'integer' },
         nome: { type: 'string', minLength: 1, maxLength: 255 },

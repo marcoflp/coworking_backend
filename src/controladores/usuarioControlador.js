@@ -1,7 +1,11 @@
 const Usuario = require('../modelos/Usuario');
+const bcrypt = require('bcryptjs');
 
 exports.criar = async (req, res) => {
   try {
+    if (!req.body.senha) {
+      return res.status(400).json({ erro: 'Senha é obrigatória' });
+    }
     const usuario = await Usuario.query().insert(req.body);
     const { senha: _, ...usuarioSemSenha } = usuario;
     res.status(201).json(usuarioSemSenha);
@@ -40,14 +44,22 @@ exports.listarSimples = async (req, res) => {
 };
 
 exports.buscarPorId = async (req, res) => {
-  const usuario = await Usuario.query().findById(req.params.id).select('id', 'nome', 'email', 'telefone');
-  if (!usuario) return res.status(404).json({ erro: 'Não encontrado' });
-  res.json(usuario);
+  try {
+    const usuario = await Usuario.query().findById(req.params.id).select('id', 'nome', 'email', 'telefone');
+    if (!usuario) return res.status(404).json({ erro: 'Não encontrado' });
+    res.json(usuario);
+  } catch (err) {
+    res.status(500).json({ erro: err.message });
+  }
 };
 
 exports.atualizar = async (req, res) => {
   try {
-    await Usuario.query().patchAndFetchById(req.params.id, req.body);
+    const dados = { ...req.body };
+    if (dados.senha) {
+      dados.senha = await bcrypt.hash(dados.senha, 10);
+    }
+    await Usuario.query().patchAndFetchById(req.params.id, dados);
     const usuario = await Usuario.query()
       .findById(req.params.id)
       .select('id', 'nome', 'email', 'telefone');
