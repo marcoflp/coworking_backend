@@ -11,13 +11,32 @@ exports.criar = async (req, res) => {
 };
 
 exports.listar = async (req, res) => {
-  const usuarios = await Usuario.query().select('id', 'nome', 'email', 'telefone', 'role');
-  res.json(usuarios);
+  try {
+    // Se for admin, retorna todos
+    if (req.usuario && req.usuario.role === 'admin') {
+      const usuarios = await Usuario.query().select('id', 'nome', 'email', 'telefone', 'role');
+      return res.json(usuarios);
+    }
+    
+    // Se for usuário comum, retorna só ele mesmo
+    if (req.usuario) {
+      const usuario = await Usuario.query()
+        .findById(req.usuario.id)
+        .select('id', 'nome', 'email', 'telefone', 'role');
+      return res.json([usuario]);
+    }
+    
+    // Sem autenticação, retorna vazio
+    res.json([]);
+  } catch (err) {
+    console.error('Erro ao listar usuários:', err);
+    res.status(500).json({ erro: err.message });
+  }
 };
 
 exports.listarSimples = async (req, res) => {
   try {
-    const usuarios = await Usuario.query().select('id', 'nome', 'email', 'telefone');
+    const usuarios = await Usuario.query().select('id', 'nome', 'email');
     res.json(usuarios);
   } catch (err) {
     console.error('Erro ao listar usuários:', err);

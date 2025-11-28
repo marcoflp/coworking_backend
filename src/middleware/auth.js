@@ -25,7 +25,12 @@ const verificarAdmin = (req, res, next) => {
 
 const verificarProprioUsuario = (req, res, next) => {
   const idRequisitado = parseInt(req.params.id);
-  if (req.usuario.role !== 'admin' && req.usuario.id !== idRequisitado) {
+  // Admin pode editar qualquer um
+  if (req.usuario.role === 'admin') {
+    return next();
+  }
+  // Usuário comum só pode editar a si mesmo
+  if (req.usuario.id !== idRequisitado) {
     return res.status(403).json({ erro: 'Você só pode editar seu próprio perfil' });
   }
   next();
