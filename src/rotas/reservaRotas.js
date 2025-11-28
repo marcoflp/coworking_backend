@@ -1,13 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const reservaControlador = require('../controladores/reservaControlador');
-const auth = require('../middleware/auth');
-const admin = require('../middleware/admin');
+const { verificarToken, verificarAdmin } = require('../middleware/auth');
 
-router.post('/', auth, reservaControlador.criar);
-router.get('/', auth, reservaControlador.listar);
-router.get('/:id', auth, reservaControlador.buscarPorId);
-router.patch('/:id', auth, reservaControlador.atualizar);
-router.delete('/:id', auth, admin, reservaControlador.deletar);
+router.post('/', verificarToken, reservaControlador.criar);
+router.get('/', verificarToken, reservaControlador.listar);
+router.get('/:id', verificarToken, reservaControlador.buscarPorId);
+router.patch('/:id', verificarToken, reservaControlador.atualizar);
+router.delete('/:id', verificarToken, verificarAdmin, reservaControlador.deletar);
 
 module.exports = router;

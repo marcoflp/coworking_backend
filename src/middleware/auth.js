@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
-const auth = (req, res, next) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
+const verificarToken = (req, res, next) => {
+  const token = req.headers.authorization?.replace('Bearer ', '');
   
   if (!token) {
     return res.status(401).json({ erro: 'Token não fornecido' });
@@ -12,8 +12,23 @@ const auth = (req, res, next) => {
     req.usuario = decoded;
     next();
   } catch (err) {
-    res.status(401).json({ erro: 'Token inválido' });
+    return res.status(401).json({ erro: 'Token inválido' });
   }
 };
 
-module.exports = auth;
+const verificarAdmin = (req, res, next) => {
+  if (req.usuario.role !== 'admin') {
+    return res.status(403).json({ erro: 'Acesso negado. Apenas administradores.' });
+  }
+  next();
+};
+
+const verificarProprioUsuario = (req, res, next) => {
+  const idRequisitado = parseInt(req.params.id);
+  if (req.usuario.role !== 'admin' && req.usuario.id !== idRequisitado) {
+    return res.status(403).json({ erro: 'Você só pode editar seu próprio perfil' });
+  }
+  next();
+};
+
+module.exports = { verificarToken, verificarAdmin, verificarProprioUsuario };

@@ -15,7 +15,7 @@ class Usuario extends Model {
         email: { type: 'string', format: 'email' },
         telefone: { type: ['string','null'] },
         senha: { type: 'string', minLength: 6 },
-        tipo: { type: 'string', enum: ['admin', 'usuario'], default: 'usuario' }
+        role: { type: 'string', enum: ['admin', 'user'], default: 'user' }
       }
     };
   }
