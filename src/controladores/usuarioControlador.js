@@ -16,15 +16,19 @@ exports.listar = async (req, res) => {
 };
 
 exports.listarSimples = async (req, res) => {
-  const usuarios = await Usuario.query().select('id', 'nome', 'email');
-  res.json(usuarios);
+  try {
+    const usuarios = await Usuario.query().select('id', 'nome', 'email', 'telefone');
+    res.json(usuarios);
+  } catch (err) {
+    console.error('Erro ao listar usuários:', err);
+    res.status(500).json({ erro: err.message });
+  }
 };
 
 exports.buscarPorId = async (req, res) => {
-  const usuario = await Usuario.query().findById(req.params.id);
+  const usuario = await Usuario.query().findById(req.params.id).select('id', 'nome', 'email', 'telefone');
   if (!usuario) return res.status(404).json({ erro: 'Não encontrado' });
-  const { senha: _, ...usuarioSemSenha } = usuario;
-  res.json(usuarioSemSenha);
+  res.json(usuario);
 };
 
 exports.atualizar = async (req, res) => {

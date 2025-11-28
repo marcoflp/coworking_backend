@@ -3,10 +3,9 @@ const router = express.Router();
 const usuarioControlador = require('../controladores/usuarioControlador');
 const { verificarToken, verificarAdmin, verificarProprioUsuario } = require('../middleware/auth');
 
-router.get('/simples', usuarioControlador.listarSimples);
-router.get('/', verificarToken, verificarAdmin, usuarioControlador.listar);
+router.get('/', usuarioControlador.listarSimples);
 router.post('/', usuarioControlador.criar);
-router.get('/:id', verificarToken, verificarProprioUsuario, usuarioControlador.buscarPorId);
+router.get('/:id', usuarioControlador.buscarPorId);
 router.patch('/:id', verificarToken, verificarProprioUsuario, usuarioControlador.atualizar);
 router.delete('/:id', verificarToken, verificarAdmin, usuarioControlador.deletar);
 

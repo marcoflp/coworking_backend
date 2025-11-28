@@ -11,8 +11,13 @@ exports.criar = async (req, res) => {
 };
 
 exports.listar = async (req, res) => {
-  const salas = await Sala.query();
-  res.json(salas);
+  try {
+    const salas = await Sala.query();
+    res.json(salas);
+  } catch (err) {
+    console.error('Erro ao listar salas:', err);
+    res.status(500).json({ erro: err.message });
+  }
 };
 
 exports.buscarPorId = async (req, res) => {
